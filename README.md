@@ -11,34 +11,78 @@ Let Claude, ChatGPT or Cursor manage your ads, safely: nothing changes outside t
 
 <p align="center">
   <a href="LICENSE"><img alt="License: AGPL-3.0" src="https://img.shields.io/badge/license-AGPL--3.0-blue"></a>
-  <img alt="Node 22" src="https://img.shields.io/badge/node-22-339933">
-  <img alt="PostgreSQL 13+" src="https://img.shields.io/badge/postgres-13%2B-336791">
+  <img alt="Node 22.9+" src="https://img.shields.io/badge/node-22.9%2B-339933?logo=nodedotjs&logoColor=white">
+  <img alt="PostgreSQL 13+" src="https://img.shields.io/badge/postgres-13%2B-336791?logo=postgresql&logoColor=white">
+  <img alt="MCP server" src="https://img.shields.io/badge/MCP-server-7c3aed">
+  <a href="CONTRIBUTING.md"><img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen"></a>
 </p>
 
 <p align="center">
   <a href="https://ads.viral4all.com">Hosted version</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="docs/ADDING_A_PLATFORM.md">Add a platform</a> ·
   <a href="https://ads.viral4all.com/docs">Docs</a> ·
   <a href="https://github.com/black12-ag/meta-ads-mcp/issues">Issues</a> ·
-  <a href="CONTRIBUTING.md">Contributing</a> ·
   <a href="SECURITY.md">Security</a>
 </p>
 
-Connect a Meta account, then manage your ads from a dashboard, from an AI assistant (Claude,
-ChatGPT, Cursor) or from a script.
+Connect a Meta account, then manage your ads from a dashboard, from an AI assistant (Claude, ChatGPT,
+Cursor) or from a script.
 
 **How the safety works:** every change an AI or API key asks for is checked against limits you set
 (highest daily budget, biggest raise, changes per day, protected campaigns). Anything above them waits
 on an approval page until you confirm it. Pausing an ad, which only stops spend, runs straight away.
 
-**Don't want to host it?** Use the [hosted version](https://ads.viral4all.com). This repository is
-the self-hosted edition: you run the server, the database and your own Meta app.
+**Don't want to host it?** Use the [hosted version](https://ads.viral4all.com). This repository is the
+self-hosted edition: you run the server, the database and your own Meta app.
 
-## What you get
+## Contents
 
-- Dashboard: campaigns, ad sets, ads, results, analytics, a saved-ads library
-- MCP server at `/mcp` (OAuth sign-in, per-tool scopes) and a REST API at `/api/public/v1`
-- Limits and approvals on every AI or API change, with an activity log
-- Alerts by email, webhooks, and a command-line client in `cli/`
+[Features](#features) · [How it works](#how-it-works) · [Platforms](#platforms) ·
+[Quick start](#quick-start) · [MCP tools](#mcp-tools) · [REST API and CLI](#rest-api-and-cli) ·
+[Project layout](#project-layout) · [FAQ](#faq) · [Contributing](#contributing) ·
+[License](#license-and-copyright)
+
+## Features
+
+|                          |                                                                                                                                                                |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dashboard**            | Campaigns, ad sets, ads, results and analytics, a saved-ads library, and a guided way to create a campaign                                                     |
+| **MCP server**           | `/mcp` with OAuth sign-in and per-tool scopes. Works with Claude, ChatGPT, Cursor, Claude Code, Codex and any other MCP client                                 |
+| **Limits and approvals** | You set the limits. Anything above them waits for your approval link. The server enforces this, not the AI                                                     |
+| **Activity log**         | Every read and change is recorded, with who made it: you, an API key or an AI app                                                                              |
+| **REST API and CLI**     | The same tools over plain HTTP with scoped API keys, and a command-line client                                                                                 |
+| **Alerts and webhooks**  | A daily account check that emails you when something needs attention (for example, the monthly budget is used up), and webhooks you can send to your own tools |
+| **Several accounts**     | Link more than one Meta login and switch between ad accounts                                                                                                   |
+
+## How it works
+
+```mermaid
+flowchart LR
+  A["Claude, ChatGPT, Cursor (MCP)"] --> S
+  B["Dashboard"] --> S
+  C["REST API and CLI"] --> S
+  S["Safety layer: scopes, limits, approvals"] --> M["Meta Marketing API"]
+  S --> D[("Your PostgreSQL: encrypted tokens, activity log")]
+```
+
+Everything goes through the safety layer. An AI app only sees the tools its key or sign-in allows,
+reads run straight away, and changes that raise spend or change what people see wait for you.
+
+## Platforms
+
+Meta is the only platform that works today. The others are planned, and **you can build one**: see
+[docs/ADDING_A_PLATFORM.md](docs/ADDING_A_PLATFORM.md).
+
+| Platform                                                                                                  | Status   | What it covers                                                                |
+| --------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------- |
+| ![Meta](https://img.shields.io/badge/Meta%20Ads-live-1877F2?logo=meta&logoColor=white)                    | **Live** | Facebook and Instagram campaigns, ad sets, ads, results, creatives, audiences |
+| ![TikTok](https://img.shields.io/badge/TikTok-planned-lightgrey?logo=tiktok&logoColor=black)              | Planned  | Short-form organic and Spark Ads                                              |
+| ![Google Ads](https://img.shields.io/badge/Google%20Ads-planned-lightgrey?logo=googleads&logoColor=black) | Planned  | Search, Performance Max and YouTube spend                                     |
+| ![LinkedIn](https://img.shields.io/badge/LinkedIn-planned-lightgrey?logo=linkedin&logoColor=black)        | Planned  | Company page posts and sponsored content                                      |
+| ![X](https://img.shields.io/badge/X-planned-lightgrey?logo=x&logoColor=black)                             | Planned  | Posts, replies and promoted content                                           |
+
+Want one of these sooner? Open an issue, or send a pull request.
 
 ## What you need
 
@@ -146,16 +190,86 @@ curl -X POST https://YOUR-DOMAIN/api/public/meta/sync -H "x-cron-secret: $META_S
 Open **Connect AI** in the dashboard. It shows your MCP address, `https://YOUR-DOMAIN/mcp`. Add it to
 Claude, ChatGPT or Cursor as a custom connector and sign in when asked.
 
+## MCP tools
+
+An AI app only sees the tools its sign-in or API key allows (each tool needs a scope, for example
+`ads:read`).
+
+| Kind                                 | Tools                                                                                                                                                                                                                      |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Read** (run straight away)         | `meta_list_ads`, `meta_list_campaigns`, `meta_get_insights`, `meta_list_accounts`, `meta_search_targeting`, `meta_list_audiences`, `meta_activity_log`, `meta_connection_status`                                           |
+| **Safe changes** (run straight away) | `meta_pause_ads` (only stops spend), `meta_create_ad` and `meta_duplicate` (always create a **paused** copy), `meta_upload_media`, `meta_sync_now`, `meta_switch_account`                                                  |
+| **Need your approval**               | `meta_resume_ads`, `meta_set_budget`, `meta_update_creative`, `meta_update_adset`, `meta_archive`. They return an approval link; the change runs only when you press Approve. `meta_confirm_action` then reads the outcome |
+
+Your limits (highest daily budget, biggest raise, changes per day, protected campaigns) are checked
+by the server on every request. "Blocked by your limits" means the AI must stop and ask you.
+
+## REST API and CLI
+
+Create an API key in the dashboard (**API keys**), choose its scopes, and call any tool over HTTP:
+
+```sh
+curl -X POST https://YOUR-DOMAIN/api/public/v1/tools/meta_list_campaigns \
+  -H "Authorization: Bearer sk_meta_..." \
+  -H "Content-Type: application/json" -d '{}'
+```
+
+The OpenAPI description is at `/api/public/v1/openapi.json`. The same tools are in the command-line
+client in [`cli/`](cli/README.md). Point it at your server with `--server https://YOUR-DOMAIN` or
+`VIRAL4ALL_SERVER`, and use `VIRAL4ALL_API_KEY` for the key.
+
+## Project layout
+
+```text
+src/routes/       pages and API endpoints (TanStack Start file routes)
+src/components/   the interface
+src/lib/meta/     Meta Graph API client, sync and ad actions
+src/lib/mcp/      the MCP server, its tools, limits and approvals
+src/lib/db/       database access and token encryption
+src/lib/auth/     sign-in checks
+db/schema.sql     the whole database schema (safe to re-run)
+cli/              the command-line client
+integrations/     Claude and OpenAI plugin files
+tests/            the test suite
+scripts/          setup.mjs and build helpers
+docs/             guides, such as adding a platform
+```
+
+Built with TanStack Start (React 19), Tailwind and shadcn/ui, PostgreSQL and the official MCP SDK.
+
 ## Commands
 
 | Command                           | What it does                                               |
 | --------------------------------- | ---------------------------------------------------------- |
+| `npm run setup`                   | Does the whole setup in one go (safe to run again)         |
 | `npm run dev`                     | Development server                                         |
 | `npm test`                        | Test suite (needs a local PostgreSQL)                      |
 | `npm run db:migrate`              | Applies `db/schema.sql` to `$DATABASE_URL`; safe to re-run |
 | `npm run build` / `npm start`     | Production build / run it                                  |
 | `npm run lint` / `npm run format` | ESLint / Prettier                                          |
 | `npm run check:secrets`           | Fails if a server secret can reach client code             |
+
+## FAQ
+
+**Is it really free?** Yes. The code is open source (AGPL-3.0). You pay for your own server and your
+own ad spend to Meta.
+
+**Do I need Meta's App Review?** Not to try it on your own ad accounts in development mode, where you
+can read and manage existing ads. To create new ads the app must be Live, and to manage other
+people's ad accounts you need App Review and business verification. See [Meta app](#meta-app).
+
+**Can the AI overspend?** The server checks your limits on every request, whatever the AI says. A
+change above them is refused, and anything that raises spend waits for your approval.
+
+**Where is my data?** In your own PostgreSQL database on your own server. Meta tokens are encrypted
+with your key. The app talks to Meta and Firebase (sign-in), and to Resend and Cloudflare Turnstile
+only if you turn them on.
+
+**Which AI apps work?** Any app that supports MCP: Claude, ChatGPT, Cursor, Claude Code, Codex, Gemini
+CLI and more.
+
+**Can I add TikTok, Google Ads or another platform?** Yes. See
+[docs/ADDING_A_PLATFORM.md](docs/ADDING_A_PLATFORM.md).
 
 ## Security
 
@@ -165,14 +279,15 @@ Claude, ChatGPT or Cursor as a custom connector and sign in when asked.
 
 ## Contributing
 
-Bug reports and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first. Please
-follow the [code of conduct](CODE_OF_CONDUCT.md). There is no support promise: use
+Bug reports and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first, and please
+follow the [code of conduct](CODE_OF_CONDUCT.md). Adding a platform? Start with
+[docs/ADDING_A_PLATFORM.md](docs/ADDING_A_PLATFORM.md). There is no support promise: use
 [GitHub issues](https://github.com/black12-ag/meta-ads-mcp/issues) for bugs.
 
 ## Support the project
 
-The best way to support it is to use the [hosted version](https://ads.viral4all.com), or tell
-someone who runs Meta ads. The **Sponsor** button on this repository links there too.
+The best way to support it is to use the [hosted version](https://ads.viral4all.com), or tell someone
+who runs Meta ads. The **Sponsor** button on this repository links there too.
 
 ## Community and contact
 
