@@ -129,7 +129,7 @@ export function SiteFooter({ signedIn = false }: { signedIn?: boolean }) {
           </div>
           <div className="flex gap-2">
             <a
-              href="https://github.com/black12-ag/viral4all-ads"
+              href="https://github.com/black12-ag/meta-ads-mcp"
               aria-label="Viral4All Ads on GitHub"
               className="grid size-10 place-items-center rounded-full border border-white/15 text-white/70 transition-colors hover:text-white"
             >
