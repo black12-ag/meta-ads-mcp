@@ -42,36 +42,60 @@ the self-hosted edition: you run the server, the database and your own Meta app.
 
 ## What you need
 
-|                                 |                                                                                     |
-| ------------------------------- | ----------------------------------------------------------------------------------- |
-| Node 22 and PostgreSQL 13+      | to run it                                                                           |
-| A public HTTPS address          | Meta only redirects back to HTTPS addresses (localhost is allowed while developing) |
-| A Firebase project              | for sign-in only; the free plan is enough                                           |
-| A Meta app                      | your own, from https://developers.facebook.com                                      |
-| Resend account (optional)       | for email alerts                                                                    |
-| Cloudflare Turnstile (optional) | "I'm not a robot" on the sign-in page                                               |
+|                                       |                                                                                     |
+| ------------------------------------- | ----------------------------------------------------------------------------------- |
+| Node 22.9 or newer and PostgreSQL 13+ | to run it                                                                           |
+| A public HTTPS address                | Meta only redirects back to HTTPS addresses (localhost is allowed while developing) |
+| A Firebase project                    | for sign-in only; the free plan is enough                                           |
+| A Meta app                            | your own, from https://developers.facebook.com                                      |
+| Resend account (optional)             | for email alerts                                                                    |
+| Cloudflare Turnstile (optional)       | "I'm not a robot" on the sign-in page                                               |
 
 ## Quick start
 
+One command does the setup. It installs the packages, makes your secret keys, creates the database,
+writes `.env.local` and offers to start the app.
+
 ```sh
-git clone <this repo> viral4all-ads && cd viral4all-ads
+git clone https://github.com/black12-ag/viral4all-ads-selfhost.git viral4all-ads && cd viral4all-ads
+npm run setup
+```
+
+It asks for a few things. Press **Enter** to skip any you don't have yet; you can fill them in
+later in `.env.local`, and running `npm run setup` again keeps what you already entered:
+
+| It asks for            | Where to get it                                                                  |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| Public address         | `http://localhost:3000` on your computer, or your `https://` address on a server |
+| PostgreSQL address     | Your database. The database itself is created for you                            |
+| Firebase values (4)    | [Firebase](#firebase-sign-in), 5 minutes                                         |
+| Meta App ID and Secret | [Meta app](#meta-app), 10 minutes                                                |
+
+It makes these for you, so you never have to invent them: `TOKEN_ENCRYPTION_KEY` (encrypts the stored
+Meta tokens; **keep it safe**, because losing it makes them unreadable), `CREATIVE_URL_SECRET`,
+`META_WEBHOOK_VERIFY_TOKEN` and `META_SYNC_CRON_SECRET`.
+
+At the end it prints the two addresses to enter in your Meta app. Then open the app, sign up, and
+connect Meta.
+
+`.env.local` is git-ignored. Never commit it. After that, `npm run dev` starts the app any time.
+
+<details>
+<summary>Prefer to do it by hand?</summary>
+
+```sh
 npm install
 createdb viral4all_ads
-cp .env.example .env.local     # fill it in, see below
-DATABASE_URL=postgresql://127.0.0.1:5432/viral4all_ads npm run db:migrate
-npm run dev                    # http://localhost:3000
+cp .env.example .env.local     # fill it in
+openssl rand -hex 32           # TOKEN_ENCRYPTION_KEY
+openssl rand -hex 24           # CREATIVE_URL_SECRET, META_WEBHOOK_VERIFY_TOKEN, META_SYNC_CRON_SECRET (one each)
+npm run db:migrate
+npm run dev
 ```
 
-`.env.local` is git-ignored. Never commit it.
+</details>
 
-### 1. Make your secrets
-
-```sh
-openssl rand -hex 32   # TOKEN_ENCRYPTION_KEY (encrypts stored Meta tokens; keep it safe)
-openssl rand -hex 24   # CREATIVE_URL_SECRET, META_WEBHOOK_VERIFY_TOKEN, META_SYNC_CRON_SECRET (one each)
-```
-
-### 2. Firebase (sign-in)
+### Firebase (sign-in)
 
 1. Create a project at https://console.firebase.google.com.
 2. Authentication → Sign-in method → turn on **Email/Password** and **Google**.
@@ -81,7 +105,7 @@ openssl rand -hex 24   # CREATIVE_URL_SECRET, META_WEBHOOK_VERIFY_TOKEN, META_SY
 5. Set `FIREBASE_PROJECT_ID` to the same project id. The server checks sign-in tokens itself, so you
    don't need a service-account file.
 
-### 3. Meta app
+### Meta app
 
 1. https://developers.facebook.com → **Create app** → use case **Create & manage ads with Marketing
    API**.
@@ -92,7 +116,7 @@ openssl rand -hex 24   # CREATIVE_URL_SECRET, META_WEBHOOK_VERIFY_TOKEN, META_SY
    (`https://YOUR-DOMAIN/api/public/meta/data-deletion`).
 4. The app asks for these permissions: `ads_management`, `ads_read`, `pages_show_list`,
    `pages_read_engagement`, `pages_manage_ads`, `business_management`.
-5. Set `PUBLIC_BASE_URL=https://YOUR-DOMAIN`.
+5. `PUBLIC_BASE_URL` must be that same address (the setup script asks for it).
 
 **Development mode.** A new Meta app starts in development mode. In that mode only people with a role
 on the app (you, plus testers you add under **App roles**) can connect, and reading and managing
@@ -101,15 +125,15 @@ To manage ad accounts that belong to other people you also need Meta's App Revie
 verification. Meta changes these rules, so check their current documentation before you promise
 anything to your users.
 
-### 4. Run it for real
+### Run it for real
 
 ```sh
 npm run build
-npm start                       # serves on HOST:PORT (default 127.0.0.1:8094)
+npm start                       # port 3000; set PORT (and HOST) to change it
 ```
 
-Put it behind an HTTPS reverse proxy (nginx, Caddy). Run `npm start` under systemd or Docker, with
-the same variables as `.env.local` in its environment.
+Put it behind an HTTPS reverse proxy (nginx, Caddy). `npm start` reads `.env.local` too. Under
+systemd or Docker, put the same variables in the service's environment instead.
 
 Meta data is synced by a scheduler you set up. Every 30 minutes, call:
 
@@ -117,7 +141,7 @@ Meta data is synced by a scheduler you set up. Every 30 minutes, call:
 curl -X POST https://YOUR-DOMAIN/api/public/meta/sync -H "x-cron-secret: $META_SYNC_CRON_SECRET"
 ```
 
-### 5. Connect an AI
+### Connect an AI
 
 Open **Connect AI** in the dashboard. It shows your MCP address, `https://YOUR-DOMAIN/mcp`. Add it to
 Claude, ChatGPT or Cursor as a custom connector and sign in when asked.

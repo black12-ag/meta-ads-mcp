@@ -40,3 +40,6 @@ public/skills/
 public/cli/
 integrations/dist/
 secrets/
+
+# uploaded ad creatives written by scripts/setup.mjs
+data/

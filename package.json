@@ -4,17 +4,18 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
+    "dev": "node --env-file-if-exists=.env.local node_modules/vite/bin/vite.js dev",
     "prebuild": "node scripts/build-integrations.mjs && node scripts/pack-cli.mjs",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
-    "start": "node .output/server/index.mjs",
+    "start": "node --env-file-if-exists=.env.local .output/server/index.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "db:migrate": "node db/migrate.mjs",
-    "check:secrets": "node scripts/check-client-secrets.mjs"
+    "db:migrate": "node --env-file-if-exists=.env.local db/migrate.mjs",
+    "check:secrets": "node scripts/check-client-secrets.mjs",
+    "setup": "node scripts/setup.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
