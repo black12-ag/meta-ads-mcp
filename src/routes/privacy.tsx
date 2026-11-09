@@ -57,7 +57,6 @@ function Privacy() {
           <li>The goals and limits you set, and the alerts our daily check finds.</li>
           <li>Campaign plans and post drafts saved in your workspace, for example by an AI app.</li>
           <li>Webhook URLs you add and their signing secrets.</li>
-          <li>Which upcoming ad platforms you asked us to tell you about.</li>
           <li>A log of the emails we send you: the type and time, not the content.</li>
           <li>Server logs: your IP address and the page or API path requested.</li>
         </ul>

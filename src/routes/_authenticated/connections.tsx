@@ -3,6 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { Badge } from "@/components/ui/badge";
 import { MetaConnectionCard } from "@/components/meta/MetaConnectionCard";
 import { PLATFORMS } from "@/lib/platforms";
+import { SHOW_UPCOMING } from "@/lib/platform-marks";
 
 export const Route = createFileRoute("/_authenticated/connections")({
   head: () => ({
@@ -34,25 +35,33 @@ function Connections() {
     <AppShell title="Connections">
       <MetaConnectionCard />
 
-      <div className="panel mt-6">
-        <div className="flex items-end justify-between border-b border-border px-5 py-4">
-          <h2 className="text-sm font-semibold">Other platforms</h2>
-          <Link to="/setup" className="text-xs text-primary hover:underline">
-            MCP setup →
-          </Link>
+      {SHOW_UPCOMING ? (
+        <div className="panel mt-6">
+          <div className="flex items-end justify-between border-b border-border px-5 py-4">
+            <h2 className="text-sm font-semibold">Other platforms</h2>
+            <Link to="/setup" className="text-xs text-primary hover:underline">
+              MCP setup →
+            </Link>
+          </div>
+          <ul className="divide-y divide-border">
+            {upcoming.map((p) => (
+              <li key={p.id} className="flex items-center justify-between px-5 py-4">
+                <div>
+                  <p className="text-sm font-medium">{p.name}</p>
+                  <p className="text-xs text-muted-foreground">{p.blurb}</p>
+                </div>
+                <Badge variant="secondary">Not connected</Badge>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className="divide-y divide-border">
-          {upcoming.map((p) => (
-            <li key={p.id} className="flex items-center justify-between px-5 py-4">
-              <div>
-                <p className="text-sm font-medium">{p.name}</p>
-                <p className="text-xs text-muted-foreground">{p.blurb}</p>
-              </div>
-              <Badge variant="secondary">Not connected</Badge>
-            </li>
-          ))}
-        </ul>
-      </div>
+      ) : (
+        <p className="mt-6 text-sm">
+          <Link to="/setup" className="text-primary hover:underline">
+            Connect your AI →
+          </Link>
+        </p>
+      )}
     </AppShell>
   );
 }

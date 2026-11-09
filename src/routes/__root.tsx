@@ -112,11 +112,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Viral4All Ads — MCP for Ads & Social" },
+      { title: "Viral4All Ads — Meta Ads for your AI" },
       {
         name: "description",
         content:
-          "One MCP endpoint that lets Claude, ChatGPT or Cursor run your Meta, Google, TikTok, LinkedIn and X campaigns.",
+          "One MCP endpoint that lets Claude, ChatGPT or Cursor run your Meta (Facebook and Instagram) ad campaigns, with limits and approvals.",
       },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Viral4All Ads" },

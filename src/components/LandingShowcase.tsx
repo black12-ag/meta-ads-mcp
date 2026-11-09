@@ -43,7 +43,7 @@ const InHouseScene = (
   <div className={cn(GLASS, "space-y-1.5 text-[13px]")}>
     {[
       { mark: "meta", text: "Summer Sale · campaign", when: "Tue 09:00" },
-      { mark: "instagram", text: "Launch reel · post", when: "Tue 09:00" },
+      { mark: "meta", text: "Lookalike ad set · paused", when: "Tue 09:00" },
     ].map((r) => {
       const Icon = MARK[r.mark];
       return (

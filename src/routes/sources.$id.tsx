@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, Bell, Check, Loader2 } from "lucide-react";
@@ -11,10 +11,13 @@ import { SpotlightCard } from "@/components/landing/SpotlightCard";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/hooks/use-session";
 import { getDocsTools } from "@/lib/docs.functions";
-import { PLATFORM_MARKS, markById } from "@/lib/platform-marks";
+import { PLATFORM_MARKS, SHOW_UPCOMING, markById } from "@/lib/platform-marks";
 import { listMySourceRequests, requestSource } from "@/lib/sources.functions";
 
 export const Route = createFileRoute("/sources/$id")({
+  beforeLoad: () => {
+    if (!SHOW_UPCOMING) throw redirect({ to: "/" });
+  },
   loader: async ({ params }) => {
     const mark = markById(params.id);
     if (!mark) throw notFound();

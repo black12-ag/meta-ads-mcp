@@ -12,7 +12,10 @@ const ok = (result: unknown): ToolResult => ({
   structuredContent: result as Record<string, unknown>,
 });
 
-const fail = (message: string): ToolResult => ({ content: [{ type: "text", text: message }], isError: true });
+const fail = (message: string): ToolResult => ({
+  content: [{ type: "text", text: message }],
+  isError: true,
+});
 
 /** Tools over the local workspace tables (campaigns, posts). */
 export function registerWorkspaceTools(server: McpServer, userId: string) {
@@ -24,10 +27,15 @@ export function registerWorkspaceTools(server: McpServer, userId: string) {
         "List campaign plans saved in the Viral4All Ads workspace (local notes, not live Meta campaigns; use meta_list_campaigns for those), optionally filtered by status or platform.",
       inputSchema: {
         status: z.enum(["draft", "active", "paused", "completed"]).optional(),
-        platform: z.string().optional().describe("Platform id, e.g. meta, google_ads, x, linkedin"),
+        platform: z.string().optional().describe("Platform id, e.g. meta"),
         limit: z.number().int().min(1).max(100).default(25),
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
     },
     async ({ status, platform, limit }) => {
       const { listCampaigns } = await import("@/lib/db/workspace.server");
@@ -44,8 +52,12 @@ export function registerWorkspaceTools(server: McpServer, userId: string) {
         "Save a campaign plan in the Viral4All Ads workspace. This is a local note: nothing is created on Meta (use meta_create_ad for that).",
       inputSchema: {
         name: z.string().trim().min(1).max(120),
-        platform: z.enum(["meta", "google_ads", "x", "linkedin", "tiktok"]).describe("Ad platform the campaign runs on."),
-        objective: z.enum(["awareness", "traffic", "engagement", "leads", "sales"]).default("awareness"),
+        platform: z
+          .enum(["meta", "google_ads", "x", "linkedin", "tiktok"])
+          .describe("Ad platform the campaign runs on."),
+        objective: z
+          .enum(["awareness", "traffic", "engagement", "leads", "sales"])
+          .default("awareness"),
         budget_usd: z.number().min(0).default(0),
       },
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
@@ -73,7 +85,12 @@ export function registerWorkspaceTools(server: McpServer, userId: string) {
         campaign_id: z.string().uuid(),
         status: z.enum(["draft", "active", "paused", "completed"]),
       },
-      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: false },
+      annotations: {
+        readOnlyHint: false,
+        destructiveHint: true,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
     },
     async ({ campaign_id, status }) => {
       const { updateCampaignStatus } = await import("@/lib/db/workspace.server");
@@ -93,7 +110,12 @@ export function registerWorkspaceTools(server: McpServer, userId: string) {
         platform: z.string().optional(),
         limit: z.number().int().min(1).max(100).default(25),
       },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
     },
     async ({ status, platform, limit }) => {
       const { listPosts } = await import("@/lib/db/workspace.server");
@@ -110,7 +132,11 @@ export function registerWorkspaceTools(server: McpServer, userId: string) {
       inputSchema: {
         content: z.string().trim().min(1).max(5000),
         platform: z.enum(["x", "linkedin", "tiktok", "slack"]),
-        scheduled_at: z.string().datetime().optional().describe("ISO 8601 time to publish. Omit to save as a draft."),
+        scheduled_at: z
+          .string()
+          .datetime()
+          .optional()
+          .describe("ISO 8601 time to publish. Omit to save as a draft."),
       },
       annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
     },
@@ -133,8 +159,15 @@ export function registerWorkspaceTools(server: McpServer, userId: string) {
       title: "Workspace notes summary",
       description:
         "Totals across the campaign plans saved in the Viral4All Ads workspace. For live Meta numbers use meta_get_insights.",
-      inputSchema: { platform: z.string().optional().describe("Limit the summary to one platform id.") },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      inputSchema: {
+        platform: z.string().optional().describe("Limit the summary to one platform id."),
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      },
     },
     async ({ platform }) => {
       const { campaignSummaryRows } = await import("@/lib/db/workspace.server");

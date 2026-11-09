@@ -145,14 +145,25 @@ function ApprovalsPage() {
             Couldn't load your approvals. {(approvals.error as Error).message}
           </p>
         ) : !approvals.isLoading && !waiting.length ? (
-          <div className="panel flex items-center gap-4 p-6 text-sm text-muted-foreground">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-              <Inbox className="size-5" />
-            </span>
-            <span>
-              <span className="block font-semibold text-foreground">You're all caught up.</span>
-              Requests from your AI show up here.
-            </span>
+          <div className="panel flex flex-col items-center gap-5 p-8 text-center sm:flex-row sm:text-left">
+            <div className="relative shrink-0">
+              <div className="absolute inset-0 rounded-2xl bg-emerald-500/20 blur-xl" />
+              <img
+                src="/brand/mascot/mascot-approvals.jpg"
+                alt="Approvals shield mascot"
+                className="relative size-24 rounded-2xl object-cover ring-2 ring-emerald-500/30 shadow-md transition-transform duration-300 hover:scale-105"
+              />
+            </div>
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-500">
+                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                All Protected
+              </span>
+              <h3 className="mt-2 text-base font-semibold text-foreground">You're all caught up!</h3>
+              <p className="mt-1 max-w-md text-sm text-muted-foreground leading-relaxed">
+                Zero pending approval requests. When your AI agent proposes new ads, budgets, or scaling tweaks, they will appear right here for your safe review.
+              </p>
+            </div>
           </div>
         ) : null}
       </section>

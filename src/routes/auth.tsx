@@ -29,7 +29,7 @@ export const Route = createFileRoute("/auth")({
           "Sign in to Viral4All Ads to run your ad campaigns, social posts and MCP connections from any AI assistant.",
       },
       { property: "og:title", content: "Sign in — Viral4All Ads" },
-      { property: "og:description", content: "Sign in to your ads and social command center." },
+      { property: "og:description", content: "Sign in to manage your Meta ads." },
     ],
   }),
   validateSearch: (s: Record<string, unknown>): { next?: string } => {

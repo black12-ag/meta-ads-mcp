@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/Logo";
+import { SHOW_UPCOMING } from "@/lib/platform-marks";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   NavigationMenu,
@@ -65,7 +66,7 @@ const FEATURES = [
 
 // "/#…" so the section links also work from /docs, /connect and the legal pages.
 const NAV_LINKS = [
-  { label: "Sources", href: "/sources" },
+  ...(SHOW_UPCOMING ? [{ label: "Sources", href: "/sources" }] : []),
   { label: "How it works", href: "/#how-it-works" },
   { label: "Docs", href: "/docs" },
   { label: "Connect AI", href: "/connect" },

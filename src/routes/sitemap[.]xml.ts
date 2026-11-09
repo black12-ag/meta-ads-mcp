@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { PLATFORM_MARKS } from "@/lib/platform-marks";
+import { PLATFORM_MARKS, SHOW_UPCOMING } from "@/lib/platform-marks";
 
 const BASE_URL = "https://ads.viral4all.com";
 
@@ -19,8 +19,10 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/how-it-works", changefreq: "monthly", priority: "0.8" },
           { path: "/docs", changefreq: "weekly", priority: "0.9" },
           { path: "/connect", changefreq: "monthly", priority: "0.8" },
-          { path: "/sources", changefreq: "monthly", priority: "0.8" },
-          ...PLATFORM_MARKS.map((m) => ({
+          ...(SHOW_UPCOMING
+            ? [{ path: "/sources", changefreq: "monthly" as const, priority: "0.8" }]
+            : []),
+          ...PLATFORM_MARKS.filter(() => SHOW_UPCOMING).map((m) => ({
             path: `/sources/${m.id}`,
             changefreq: "monthly" as const,
             priority: "0.6",

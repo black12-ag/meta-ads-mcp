@@ -26,3 +26,15 @@ export async function verifyTurnstile(
     return false;
   }
 }
+
+export const turnstileSiteKey = () => process.env.TURNSTILE_SITE_KEY?.trim() || null;
+
+export async function verifyHumanToken(
+  token: string,
+  ip: string | null,
+  fetchImpl: typeof fetch = fetch,
+): Promise<boolean> {
+  const secret = process.env.TURNSTILE_SECRET_KEY?.trim();
+  if (!secret) return true;
+  return verifyTurnstile(token, secret, ip, fetchImpl);
+}

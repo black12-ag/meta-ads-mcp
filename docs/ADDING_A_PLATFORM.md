@@ -1,7 +1,6 @@
-# Adding a platform (TikTok, Google Ads, X, LinkedIn, ...)
+# Adding a platform
 
-Meta is the only platform that works today. The others (TikTok, Google Ads, X, LinkedIn) are
-placeholders in the interface and are not built yet.
+Meta is the only platform that works today.
 
 There is no plugin system. Adding a platform means following the pattern Meta already uses, file by
 file. This guide lists each step and the Meta files to copy from. **Open an issue first** so we can
@@ -74,8 +73,9 @@ it will not be merged.
 
 ### 6. Interface
 
-- `src/lib/platforms.ts`: set `connectorAvailable: true` for your platform.
-- `src/lib/platform-marks.tsx`: change its `status` from `"soon"` to `"live"` and check the icon.
+- `src/lib/platforms.ts`: add your platform and set `connectorAvailable: true`.
+- `src/lib/platform-marks.tsx`: add a mark with `status: "live"` and an icon. Only live marks are
+  shown while `SHOW_UPCOMING` is `false`, which is how Meta-only is kept today.
 - Add a connect card where Meta's is (Settings and Connections) and a source page
   (`src/routes/sources.$id.tsx` already lists the platforms).
 

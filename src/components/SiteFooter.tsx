@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Github, Mail } from "lucide-react";
 import { LogoMark } from "@/components/Logo";
 import { Reveal } from "@/components/Reveal";
+import { SHOW_UPCOMING } from "@/lib/platform-marks";
 
 export const CONTACT_EMAIL = "support@viral4all.com";
 
@@ -12,7 +13,7 @@ const COLUMNS = [
     title: "Product",
     links: [
       { label: "Connect AI", href: "/connect" },
-      { label: "Sources", href: "/sources" },
+      ...(SHOW_UPCOMING ? [{ label: "Sources", href: "/sources" }] : []),
       { label: "How it works", href: "/how-it-works" },
       { label: "Approvals & limits", href: "/docs#safety" },
       { label: "Docs", href: "/docs" },

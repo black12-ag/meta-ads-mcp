@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { LandingNav } from "@/components/LandingNav";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -6,9 +6,12 @@ import { Reveal } from "@/components/Reveal";
 import { SourceStatus } from "@/components/SourceStatus";
 import { SpotlightCard } from "@/components/landing/SpotlightCard";
 import { useSession } from "@/hooks/use-session";
-import { PLATFORM_MARKS, type PlatformMark } from "@/lib/platform-marks";
+import { PLATFORM_MARKS, SHOW_UPCOMING, type PlatformMark } from "@/lib/platform-marks";
 
 export const Route = createFileRoute("/sources/")({
+  beforeLoad: () => {
+    if (!SHOW_UPCOMING) throw redirect({ to: "/" });
+  },
   head: () => ({
     meta: [
       { title: "Sources — Viral4All Ads" },

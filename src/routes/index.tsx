@@ -6,6 +6,7 @@ import { GravityStory } from "@/components/landing/GravityStory";
 import { Reveal } from "@/components/Reveal";
 import { LandingShowcase } from "@/components/LandingShowcase";
 import { SourceArc } from "@/components/landing/SourceArc";
+import { SHOW_UPCOMING } from "@/lib/platform-marks";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CapabilityBento } from "@/components/landing/CapabilityBento";
 import { PlayOnView } from "@/components/landing/PlayOnView";
@@ -17,17 +18,17 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Viral4All Ads — MCP Server for Ads & Social Management" },
+      { title: "Viral4All Ads — Manage your Meta Ads with Claude, ChatGPT or Cursor" },
       {
         name: "description",
         content:
-          "Connect Meta, Google, TikTok, LinkedIn and X to Claude, ChatGPT or Cursor. Launch campaigns, move budgets and schedule posts through one OAuth-secured MCP endpoint.",
+          "Connect your Meta (Facebook and Instagram) ads to Claude, ChatGPT or Cursor. Check results, pause ads, change budgets and launch campaigns through one secure MCP endpoint, with limits and approvals on every change.",
       },
-      { property: "og:title", content: "Viral4All Ads — MCP Server for Ads & Social Management" },
+      { property: "og:title", content: "Viral4All Ads — Manage your Meta Ads with AI" },
       {
         property: "og:description",
         content:
-          "One MCP endpoint for every ad and social account. Run campaigns and content from your AI assistant.",
+          "Run your Meta ads from your AI assistant, with limits and approvals on every change.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -141,20 +142,26 @@ function Landing() {
       <div className="relative z-10 rounded-t-[2.5rem] bg-background md:rounded-t-[4rem]">
         <section className="rounded-t-[2.5rem] bg-background md:rounded-t-[4rem]">
           <Reveal className="mx-auto max-w-6xl px-6 py-14 lg:px-16">
-            <p className="text-center text-xs text-muted-foreground font-medium">Sources</p>
-            <div className="mt-7">
-              <SourceArc />
-            </div>
-            <p className="mt-4 text-center">
-              <Link
-                to="/sources"
-                className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
-              >
-                All sources <ArrowRight className="size-4" />
-              </Link>
-            </p>
+            {SHOW_UPCOMING ? (
+              <>
+                <p className="text-center text-xs text-muted-foreground font-medium">Sources</p>
+                <div className="mt-7">
+                  <SourceArc />
+                </div>
+                <p className="mt-4 text-center">
+                  <Link
+                    to="/sources"
+                    className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline"
+                  >
+                    All sources <ArrowRight className="size-4" />
+                  </Link>
+                </p>
+              </>
+            ) : null}
 
-            <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div
+              className={cn("grid gap-3 sm:grid-cols-2 lg:grid-cols-4", SHOW_UPCOMING && "mt-10")}
+            >
               {PERKS.map((perk) => (
                 <SpotlightCard key={perk.title} className="flex items-center gap-3 p-4">
                   <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">

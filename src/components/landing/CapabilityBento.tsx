@@ -131,10 +131,10 @@ function Budget() {
 }
 
 const POSTS = [
-  { mark: "instagram", title: "Reel · Summer drop", when: "Tue 09:00" },
-  { mark: "meta", title: "Carousel · 3 looks", when: "Tue 13:30" },
-  { mark: "instagram", title: "Story · Last day", when: "Wed 18:00" },
-  { mark: "meta", title: "Post · Back in stock", when: "Thu 10:00" },
+  { mark: "meta", title: "Campaign · Summer drop", when: "Tue 09:00" },
+  { mark: "meta", title: "Ad set · Lookalike buyers", when: "Tue 13:30" },
+  { mark: "meta", title: "Carousel ad · 3 looks", when: "Wed 18:00" },
+  { mark: "meta", title: "Campaign · Back in stock", when: "Thu 10:00" },
 ];
 
 function Queue() {
@@ -367,8 +367,8 @@ export function CapabilityBento() {
       <BentoCard
         delay={0}
         icon={CalendarClock}
-        title="Creative and post queue"
-        body="Plan posts next to your paid campaigns."
+        title="Launch queue"
+        body="New ads wait, paused, until you approve them."
       >
         <Queue />
       </BentoCard>

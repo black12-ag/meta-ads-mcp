@@ -170,8 +170,38 @@ function Campaigns() {
                 </tr>
               ) : campaigns.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-5 py-10 text-center text-muted-foreground">
-                    No campaigns yet. Create your first one above.
+                  <td colSpan={8} className="px-5 py-14 text-center">
+                    <div className="mx-auto flex max-w-md flex-col items-center justify-center">
+                      <div className="relative mb-5">
+                        <div className="absolute inset-0 rounded-3xl bg-primary/20 blur-2xl" />
+                        <img
+                          src="/brand/mascot/mascot-promote.jpg"
+                          alt="Launch campaign mascot"
+                          className="relative size-32 rounded-3xl object-cover ring-2 ring-primary/40 shadow-xl transition-transform duration-300 hover:scale-105"
+                        />
+                      </div>
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">
+                        Ready for Takeoff
+                      </span>
+                      <h4 className="mt-3 text-lg font-bold tracking-tight text-foreground sm:text-xl">
+                        No campaigns launched yet
+                      </h4>
+                      <p className="mt-1.5 max-w-sm text-xs text-muted-foreground leading-relaxed">
+                        Ready to reach thousands of targeted customers? Let our AI lion assistant generate and blast off your first campaign in minutes.
+                      </p>
+                      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                        <Button
+                          onClick={() => setCreating(true)}
+                          disabled={!accountId || !pageId}
+                          className="shadow-sm"
+                        >
+                          <Plus className="mr-1.5 size-4" /> New Campaign
+                        </Button>
+                        <Button variant="outline" asChild>
+                          <Link to="/promote">AI Promote Wizard</Link>
+                        </Button>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               ) : (

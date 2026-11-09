@@ -61,7 +61,7 @@ const YouTubeMark = (p: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export const PLATFORM_MARKS: PlatformMark[] = [
+const ALL_MARKS: PlatformMark[] = [
   {
     id: "meta",
     platform: "meta",
@@ -134,6 +134,16 @@ export const PLATFORM_MARKS: PlatformMark[] = [
     icon: YouTubeMark,
   },
 ];
+
+/**
+ * Meta is the only platform for now. Set this to true to show the planned ones again: the landing
+ * page, menus, /sources pages, the Connections list and the "notify me" requests all follow it.
+ */
+export const SHOW_UPCOMING = false;
+
+export const PLATFORM_MARKS: PlatformMark[] = SHOW_UPCOMING
+  ? ALL_MARKS
+  : ALL_MARKS.filter((m) => m.status === "live");
 
 export const markById = (id: string) => PLATFORM_MARKS.find((m) => m.id === id);
 

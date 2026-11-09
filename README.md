@@ -71,18 +71,12 @@ reads run straight away, and changes that raise spend or change what people see 
 
 ## Platforms
 
-Meta is the only platform that works today. The others are planned, and **you can build one**: see
-[docs/ADDING_A_PLATFORM.md](docs/ADDING_A_PLATFORM.md).
+**Meta Ads** (Facebook and Instagram) is the only platform for now: campaigns, ad sets, ads, results,
+creatives and audiences.
 
-| Platform                                                                                                  | Status   | What it covers                                                                |
-| --------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------- |
-| ![Meta](https://img.shields.io/badge/Meta%20Ads-live-1877F2?logo=meta&logoColor=white)                    | **Live** | Facebook and Instagram campaigns, ad sets, ads, results, creatives, audiences |
-| ![TikTok](https://img.shields.io/badge/TikTok-planned-lightgrey?logo=tiktok&logoColor=black)              | Planned  | Short-form organic and Spark Ads                                              |
-| ![Google Ads](https://img.shields.io/badge/Google%20Ads-planned-lightgrey?logo=googleads&logoColor=black) | Planned  | Search, Performance Max and YouTube spend                                     |
-| ![LinkedIn](https://img.shields.io/badge/LinkedIn-planned-lightgrey?logo=linkedin&logoColor=black)        | Planned  | Company page posts and sponsored content                                      |
-| ![X](https://img.shields.io/badge/X-planned-lightgrey?logo=x&logoColor=black)                             | Planned  | Posts, replies and promoted content                                           |
-
-Want one of these sooner? Open an issue, or send a pull request.
+Want another platform? You can add it. There is no plugin system, but
+[docs/ADDING_A_PLATFORM.md](docs/ADDING_A_PLATFORM.md) walks through it step by step, using Meta as
+the pattern to copy.
 
 ## What you need
 
@@ -268,8 +262,7 @@ only if you turn them on.
 **Which AI apps work?** Any app that supports MCP: Claude, ChatGPT, Cursor, Claude Code, Codex, Gemini
 CLI and more.
 
-**Can I add TikTok, Google Ads or another platform?** Yes. See
-[docs/ADDING_A_PLATFORM.md](docs/ADDING_A_PLATFORM.md).
+**Can I add another platform?** Yes. See [docs/ADDING_A_PLATFORM.md](docs/ADDING_A_PLATFORM.md).
 
 ## Security
 
