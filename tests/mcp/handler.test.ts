@@ -4,6 +4,7 @@ import { hashKey } from "@/lib/api-keys.server";
 import { insertApiKey } from "@/lib/db/keys.server";
 import { insertCampaign } from "@/lib/db/workspace.server";
 import { handleMcpRequest } from "@/lib/mcp/handler.server";
+import { NOTES_TOOLS } from "@/lib/mcp/server";
 
 const KEY = "sk_meta_test_key_for_mcp";
 
@@ -62,10 +63,16 @@ function rpc(body: unknown, key: string | null = KEY) {
   );
 }
 
-const READ_TOOLS = [
+const NOTE_TOOLS = [
   "list_campaigns",
   "list_posts",
   "performance_summary",
+  "create_campaign",
+  "update_campaign_status",
+  "create_post",
+];
+const READ_TOOLS = [
+  ...(NOTES_TOOLS ? NOTE_TOOLS.slice(0, 3) : []),
   "meta_list_ads",
   "meta_get_insights",
   "meta_list_campaigns",
@@ -77,9 +84,7 @@ const READ_TOOLS = [
 ];
 const ALL_TOOLS = [
   ...READ_TOOLS,
-  "create_campaign",
-  "update_campaign_status",
-  "create_post",
+  ...(NOTES_TOOLS ? NOTE_TOOLS.slice(3) : []),
   "meta_pause_ads",
   "meta_resume_ads",
   "meta_set_budget",
@@ -159,7 +164,7 @@ test("initialize reports the server name", async () => {
   expect(initJson.result.serverInfo.name).toBe("viral4all-ads-mcp");
 });
 
-test("tool calls are scoped to the key's owner", async () => {
+test.skipIf(!NOTES_TOOLS)("tool calls are scoped to the key's owner", async () => {
   const res = await rpc({
     jsonrpc: "2.0",
     id: 3,

@@ -26,6 +26,21 @@ export interface McpCaller {
   via?: "mcp" | "api";
 }
 
+/**
+ * The six workspace-note tools (list_campaigns, create_post, ...) keep local plans and drafts, not
+ * Meta ads. Off while the product is Meta Ads only: an AI could mistake them for real changes.
+ */
+export const NOTES_TOOLS = false;
+
+const NOTE_TOOL_SCOPES: Record<string, ApiScope> = {
+  list_campaigns: "ads:read",
+  list_posts: "ads:read",
+  performance_summary: "ads:read",
+  create_campaign: "ads:create",
+  update_campaign_status: "ads:create",
+  create_post: "ads:create",
+};
+
 /** Scope each tool needs. A tool missing here is never registered. */
 export const TOOL_SCOPES: Record<string, ApiScope | ApiScope[]> = {
   meta_list_ads: "ads:read",
@@ -48,12 +63,7 @@ export const TOOL_SCOPES: Record<string, ApiScope | ApiScope[]> = {
   meta_duplicate: "ads:create",
   meta_update_adset: "ads:edit",
   meta_archive: "ads:status",
-  list_campaigns: "ads:read",
-  list_posts: "ads:read",
-  performance_summary: "ads:read",
-  create_campaign: "ads:create",
-  update_campaign_status: "ads:create",
-  create_post: "ads:create",
+  ...(NOTES_TOOLS ? NOTE_TOOL_SCOPES : {}),
 };
 
 export function canUseTool(name: string, scopes: string[]) {
@@ -112,7 +122,11 @@ export function buildMcpServer(caller: McpCaller) {
         "meta_resume_ads, meta_set_budget, meta_update_creative, meta_update_adset and meta_archive never change anything themselves: they return a summary, an approve_url and a confirm_token. Show the user both; the change runs only when they open the link and press Approve. Then call meta_confirm_action to read the outcome. Never say a change is done before that.",
         "The owner's hard limits (highest daily budget, biggest raise, AI changes per day, protected campaigns) are enforced by the server. 'Blocked by your limits: …' means stop and tell the user; only they can change limits, at /limits.",
         "Budgets and money are in minor units (cents). If Meta isn't connected, meta_connection_status gives the link.",
-        "list_campaigns, create_campaign, update_campaign_status, list_posts, create_post and performance_summary manage local workspace notes, not Meta.",
+        ...(NOTES_TOOLS
+          ? [
+              "list_campaigns, create_campaign, update_campaign_status, list_posts, create_post and performance_summary manage local workspace notes, not Meta.",
+            ]
+          : []),
         "You only see the tools this connection may use.",
       ].join(" "),
     },
@@ -126,6 +140,6 @@ export function buildMcpServer(caller: McpCaller) {
 
   registerMetaTools(server, caller);
   registerExploreTools(server, caller);
-  registerWorkspaceTools(server, caller.userId);
+  if (NOTES_TOOLS) registerWorkspaceTools(server, caller.userId);
   return server;
 }
