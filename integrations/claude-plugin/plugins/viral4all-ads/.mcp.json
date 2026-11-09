@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "viral4all-ads": {
+      "type": "http",
+      "url": "https://ads.viral4all.com/mcp"
+    }
+  }
+}

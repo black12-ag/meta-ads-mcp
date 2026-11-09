@@ -1,0 +1,34 @@
+{
+  "name": "viral4all-ads",
+  "version": "1.0.2",
+  "description": "Viral4All Ads (Meta Ads control room) from the terminal: the same tools as its MCP server, for people, scripts and AI agents.",
+  "homepage": "https://ads.viral4all.com",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "viral4all-ads": "bin/viral4all-ads.mjs"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "meta-ads",
+    "facebook-ads",
+    "instagram-ads",
+    "mcp",
+    "cli",
+    "ai-agent",
+    "approvals",
+    "viral4all"
+  ],
+  "author": "Viral4All <support@viral4all.com>",
+  "bugs": {
+    "email": "support@viral4all.com",
+    "url": "https://ads.viral4all.com/support"
+  }
+}

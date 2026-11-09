@@ -1,0 +1,14 @@
+{
+  "name": "viral4all",
+  "description": "Viral4All plugins for Claude Code.",
+  "owner": {
+    "name": "Viral4All"
+  },
+  "plugins": [
+    {
+      "name": "viral4all-ads",
+      "source": "./plugins/viral4all-ads",
+      "description": "Meta Ads control room for Claude: reports, wasted-spend checks, new campaigns and budget changes, with owner approval and hard limits on every spend change."
+    }
+  ]
+}

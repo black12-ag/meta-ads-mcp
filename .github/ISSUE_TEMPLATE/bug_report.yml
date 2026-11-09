@@ -1,0 +1,28 @@
+name: Bug report
+description: Something doesn't work as it should
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a security problem, don't use this form. See SECURITY.md.
+        Never paste access tokens, API keys or `.env.local` contents.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+  - type: input
+    id: version
+    attributes:
+      label: Commit or version
+  - type: input
+    id: env
+    attributes:
+      label: Node, PostgreSQL and how you run it

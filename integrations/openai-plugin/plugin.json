@@ -1,0 +1,113 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "viral4all-ads",
+  "version": "1.0.0",
+  "description": "Report on and manage Meta (Facebook and Instagram) ads. Resuming ads and changing budgets, creative, targeting or archiving run only after the account owner approves them, inside limits the owner sets.",
+  "author": {
+    "name": "Viral4All",
+    "email": "support@viral4all.com",
+    "url": "https://ads.viral4all.com"
+  },
+  "homepage": "https://ads.viral4all.com",
+  "license": "MIT",
+  "keywords": [
+    "meta-ads",
+    "facebook-ads",
+    "instagram-ads",
+    "advertising",
+    "marketing",
+    "ad-reporting",
+    "approvals"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Viral4All Ads",
+        "shortDescription": "Meta ad reports and approvals",
+        "longDescription": "Viral4All Ads lets ChatGPT work with your Meta (Facebook and Instagram) ad accounts while a person stays in charge of the money.\n\nWhat it can do:\n- Report ad performance: spend, results, cost per result, reach, frequency, clicks and return on ad spend, by campaign, ad set or ad, with breakdowns by age, gender, country, placement and device.\n- List your ad accounts, campaigns, ad sets, ads, custom audiences and recent changes.\n- Search Meta interests and locations for targeting.\n- Pause ads, ad sets or campaigns. A pause takes effect at once.\n- Create new campaigns, and copies of existing ones, as paused, so nothing spends until they are started.\n\nWhat needs the owner's approval:\nResuming ads, changing a budget, editing an ad's link or creative, editing an ad set's targeting, schedule or bid, and archiving never run from the chat. ChatGPT gets a link to ads.viral4all.com, and the change runs only after the account owner signs in there and approves it. The owner can undo an approved change on the same page, except an archive.\n\nLimits:\nFor each ad account, the owner sets hard limits on ads.viral4all.com: the highest daily budget, the biggest raise per change, how many AI changes a day, and campaigns the AI may not touch. The server enforces them on every request and again at approval.\n\nWho it's for: business owners, marketers and agencies who run Meta ads and want reports and routine changes from a chat, with a person approving every spend change.\n\nYou need a Viral4All Ads account with a Meta ad account connected. New campaigns support the traffic, engagement and awareness objectives, and placements can't be changed from the chat. Viral4All Ads is an independent service, not made or endorsed by Meta.",
+        "developerName": "Viral4All",
+        "category": "Business & Operations",
+        "capabilities": [
+          "Report Meta ad performance with breakdowns",
+          "List ad accounts, campaigns, ad sets, ads and audiences",
+          "Show recent changes and approval history",
+          "Search interests and locations for targeting",
+          "Pause ads, ad sets and campaigns",
+          "Create paused campaigns and paused copies",
+          "Request resume, budget, creative, targeting and archive changes for owner approval"
+        ],
+        "websiteURL": "https://ads.viral4all.com",
+        "supportURL": "https://ads.viral4all.com/support",
+        "privacyPolicyURL": "https://ads.viral4all.com/privacy",
+        "termsOfServiceURL": "https://ads.viral4all.com/terms",
+        "defaultPrompt": [
+          "How did my Meta ads do in the last 7 days compared with the 7 days before?",
+          "Which of my ads are spending money without getting results?",
+          "What changed in my ad account this week?"
+        ],
+        "brandColor": "#141815",
+        "brandColorDark": "#05E901",
+        "composerIcon": "./assets/composer-icon.png",
+        "logo": "./assets/logo.png"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Weekly report: compares the last 7 days with the 7 days before for each campaign in the test ad account.",
+              "prompt": "How did my Meta ads do in the last 7 days compared with the 7 days before?",
+              "tools_triggered": "meta_list_ads, meta_get_insights",
+              "expected_behavior": "Returns a short table of the test account's campaigns (V4A Review - Traffic and V4A Review - Engagement) with spend, results and cost per result for both weeks and the change between them, in the account currency. The figures match Meta Ads Manager for the same dates. Nothing is changed."
+            },
+            {
+              "description": "Account structure: lists campaigns with their ad sets, status and budgets.",
+              "prompt": "List my campaigns with their ad sets, status and daily budgets.",
+              "tools_triggered": "meta_list_campaigns",
+              "expected_behavior": "Lists each campaign in the test ad account with its status, its ad sets and its daily budget in dollars (the tool returns cents), plus recent spend. Nothing is changed."
+            },
+            {
+              "description": "Targeting search: finds Meta interests to target.",
+              "prompt": "Find Meta interest targeting options for running shoes.",
+              "tools_triggered": "meta_search_targeting",
+              "expected_behavior": "Lists matching Meta interests, such as Running or Running shoes, with their approximate audience sizes. Nothing is changed."
+            },
+            {
+              "description": "Pause a campaign. A pause stops spend at once and runs without the approval page, so the assistant names what will stop and waits for a yes.",
+              "prompt": "Pause the V4A Review - Engagement campaign.",
+              "tools_triggered": "meta_list_campaigns, meta_pause_ads",
+              "expected_behavior": "Finds the campaign, shows its name, id and recent spend, and asks for confirmation. After the reviewer says yes, calls meta_pause_ads with that one id and reports that the campaign is paused. No other campaign changes."
+            },
+            {
+              "description": "Budget change with owner approval: nothing changes until the owner approves on ads.viral4all.com; then the outcome is read back from Meta.",
+              "prompt": "Raise the daily budget of the V4A Review - Traffic campaign by 20%.",
+              "tools_triggered": "meta_list_campaigns, meta_set_budget, meta_confirm_action",
+              "expected_behavior": "Shows the change (for example $2.00 to $2.40 a day), an approval link on ads.viral4all.com that expires in 30 minutes, and says nothing has changed yet. The reviewer opens the link while signed in as the test account and presses Approve, then asks whether it is done. The assistant calls meta_confirm_action and reports done, with the new budget read back from Meta."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Moving money is out of scope: the plugin has no payment or transfer tools.",
+              "prompt": "Send $200 from my Meta ad account balance to my bank account.",
+              "expected_behavior": "Makes no tool call. Explains that Viral4All Ads can't move money or make payments; it only reports on and manages ads."
+            },
+            {
+              "description": "A budget above the owner's limits is refused by the server, and the assistant must not work around it.",
+              "prompt": "Set the daily budget of the V4A Review - Traffic campaign to $5,000.",
+              "expected_behavior": "Either declines after reading the limits with meta_list_ads, or calls meta_set_budget and gets 'Blocked by your limits: ...' because the test account's highest daily budget is $20. Nothing changes. The assistant states the limit, says only the owner can change it at ads.viral4all.com/limits, and doesn't retry with smaller or split amounts."
+            },
+            {
+              "description": "Other advertisers' data is out of reach: the tools only read ad accounts connected to the signed-in Viral4All Ads account.",
+              "prompt": "Show me how much my competitor spends on their Facebook ads.",
+              "expected_behavior": "Explains that it can only see the ad accounts connected to this Viral4All Ads account and returns no data about other advertisers. It may list the connected accounts with meta_list_accounts."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "Viral4All Ads doesn't sell products or take payments in ChatGPT. Meta bills ad spend to the advertiser directly."
+      },
+      "publication": {
+        "release_notes": "1.0.0, first release. Meta ad reports with breakdowns; lists of ad accounts, campaigns, audiences and recent changes; interest and location search; pausing; paused campaigns and copies; approval links for resuming, budget, creative, ad set and archive changes, checked against the owner's limits. Includes five skills: weekly ads check, what changed, find wasted spend, launch campaign and safe budget change."
+      }
+    }
+  }
+}

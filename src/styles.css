@@ -1,0 +1,690 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+/* landing hero: copy beside the sphere cluster; must match `wide` in GravityField.tsx */
+@custom-variant wide (@media (min-width: 768px) and (min-aspect-ratio: 3/2));
+
+/*
+ * Design system: "Viral4All Ads" in the Viral4All brand (same violet as the store).
+ * Light: lavender-white page, white cards, violet #7C3AED. Dark: deep ink, light-violet accent.
+ * Manrope + JetBrains Mono. All colors are HSL semantic tokens; `.dark` on <html> switches.
+ */
+
+@theme inline {
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  /* legacy name kept so existing `font-sora` classes follow the brand font */
+  --font-sora: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* collectible-card numerals and titles only */
+  --font-card: "Barlow Condensed", "Manrope", ui-sans-serif, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-success: hsl(var(--success));
+  --color-success-foreground: hsl(var(--success-foreground));
+  --color-warning: hsl(var(--warning));
+  --color-warning-foreground: hsl(var(--warning-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-ring-offset-background: hsl(var(--background));
+  --color-surface: hsl(var(--surface));
+  --color-surface-2: hsl(var(--surface-2));
+  --color-nav-button: hsl(var(--nav-button));
+  --color-hero-bg: hsl(var(--hero-bg));
+  --color-brand: hsl(var(--brand));
+  --color-brand-deep: hsl(var(--brand-deep));
+  --color-brand-light: hsl(var(--brand-light));
+  --color-ink: hsl(var(--ink));
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --shadow-glow: 0 0 0 1px hsl(var(--border)), 0 18px 50px -20px hsl(var(--shadow) / 0.35);
+  --shadow-signal: 0 0 40px -12px hsl(var(--primary) / 0.6);
+  /* cards declare elevation with their border; this only seats them on the page */
+  --shadow-card: 0 1px 2px hsl(var(--shadow) / 0.06);
+
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes marquee-half {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Landing cards: pointer light (see SpotlightCard.tsx). Children sit above the light; in the
+   components layer so a child's own `absolute` utility still wins. */
+@layer components {
+  .spot > * {
+    position: relative;
+  }
+}
+.spot::before,
+.spot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.spot::before {
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 0%),
+    hsl(var(--primary) / 0.1),
+    transparent 45%
+  );
+}
+/* a 1px ring that only shows the border, brightest near the pointer */
+.spot::after {
+  padding: 1px;
+  background: radial-gradient(
+    260px circle at var(--mx, 50%) var(--my, 0%),
+    hsl(var(--primary) / 0.6),
+    transparent 60%
+  );
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+}
+.spot:hover::before,
+.spot:hover::after {
+  opacity: 1;
+}
+@media (hover: none) {
+  .spot::before,
+  .spot::after {
+    display: none;
+  }
+}
+
+/* Landing bento vignettes. Loops run only while their grid is on screen (PlayOnView). With
+   reduced motion every animation jumps to its last frame, so each one ends on a sensible still. */
+.bento [data-anim] {
+  animation-play-state: paused;
+}
+.bento[data-play="true"] [data-anim] {
+  animation-play-state: running;
+}
+@keyframes v-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes v-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes v-ping {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  60% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+@keyframes v-bar-a {
+  0%,
+  26%,
+  100% {
+    transform: scaleX(0.82);
+  }
+  40%,
+  86% {
+    transform: scaleX(0.26);
+  }
+}
+@keyframes v-bar-b {
+  0%,
+  26%,
+  100% {
+    transform: scaleX(0.4);
+  }
+  40%,
+  86% {
+    transform: scaleX(0.96);
+  }
+}
+@keyframes v-move {
+  0%,
+  22%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  40%,
+  86% {
+    transform: translateY(var(--move));
+    opacity: 1;
+  }
+  92% {
+    transform: translateY(var(--move));
+    opacity: 0;
+  }
+  96% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+@keyframes v-ticker {
+  to {
+    transform: translateY(-50%);
+  }
+}
+@keyframes v-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@keyframes v-select {
+  0%,
+  28%,
+  100% {
+    transform: translateY(0);
+  }
+  33%,
+  61% {
+    transform: translateY(100%);
+  }
+  66%,
+  94% {
+    transform: translateY(200%);
+  }
+}
+@keyframes v-type-1 {
+  0%,
+  3% {
+    clip-path: inset(0 100% 0 0);
+  }
+  14%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes v-type-2 {
+  0%,
+  20% {
+    clip-path: inset(0 100% 0 0);
+  }
+  31%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes v-type-3 {
+  0%,
+  37% {
+    clip-path: inset(0 100% 0 0);
+  }
+  48%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+/* fades the log out, then snaps back exactly as the lines reset, so nothing flashes */
+@keyframes v-cycle {
+  0%,
+  90%,
+  100% {
+    opacity: 1;
+  }
+  95%,
+  99.9% {
+    opacity: 0;
+  }
+}
+@keyframes v-step {
+  to {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 0 0 6px hsl(var(--primary) / 0.12);
+  }
+}
+.js .v-draw {
+  stroke-dasharray: 1;
+  animation: v-draw 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+.js .v-fade {
+  animation: v-fade 1.2s ease-out 0.6s both;
+}
+.v-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: v-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+.v-bar-a {
+  animation: v-bar-a 7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.v-bar-b {
+  animation: v-bar-b 7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.v-move {
+  animation: v-move 7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.v-ticker {
+  animation: v-ticker 16s linear infinite;
+}
+.v-spin {
+  animation: v-spin 5s linear infinite;
+}
+.v-select {
+  animation: v-select 7.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.v-type-1 {
+  animation: v-type-1 9s steps(28, end) infinite;
+}
+.v-type-2 {
+  animation: v-type-2 9s steps(28, end) infinite;
+}
+.v-type-3 {
+  animation: v-type-3 9s steps(28, end) infinite;
+}
+.v-cycle {
+  animation: v-cycle 9s ease-in-out infinite;
+}
+.v-step {
+  animation: v-step 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes v-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes v-kenburns {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.12) translate(-2%, -1.5%);
+  }
+}
+@keyframes v-scan {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(260%);
+  }
+}
+@keyframes v-flow {
+  from {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+@keyframes v-chip {
+  0%,
+  15% {
+    border-color: hsl(var(--primary) / 0.5);
+    background-color: hsl(var(--primary) / 0.1);
+    color: hsl(var(--foreground));
+  }
+  20%,
+  100% {
+    border-color: hsl(var(--border));
+    background-color: transparent;
+  }
+}
+@keyframes v-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.v-kenburns {
+  animation: v-kenburns 16s ease-in-out infinite alternate;
+}
+.v-scan {
+  animation: v-scan 6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+.v-flow {
+  animation: v-flow 2.4s ease-in-out infinite;
+}
+.v-chip {
+  animation: v-chip 7.2s ease-in-out infinite;
+}
+.js .v-rise {
+  animation: v-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Collectible cards (HoloCard.tsx): chrome edge, resting tilt, pointer tilt with foil and glare. */
+.holo {
+  --rx: 0deg;
+  --ry: 0deg;
+  --gx: 50%;
+  --gy: 20%;
+  --rest: 1;
+  position: relative;
+  border-radius: 16px;
+  padding: 1.5px;
+  background: linear-gradient(
+    135deg,
+    #f5f3fb 0%,
+    #9a8bc6 20%,
+    #ffffff 36%,
+    #6c5aa7 54%,
+    #ece7f7 70%,
+    #8a79c0 86%,
+    #f5f3fb 100%
+  );
+  box-shadow:
+    0 24px 40px -24px rgb(20 10 40 / 0.55),
+    0 2px 6px rgb(20 10 40 / 0.15);
+  transform: rotate(calc(var(--tilt, 0deg) * var(--rest))) rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition:
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s;
+}
+.holo:hover {
+  --rest: 0;
+  box-shadow:
+    0 36px 60px -28px rgb(76 29 149 / 0.6),
+    0 2px 6px rgb(20 10 40 / 0.15);
+  transition-duration: 0.25s, 0.4s;
+}
+.holo-face {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 14.5px;
+  color: #fff;
+  background: radial-gradient(120% 90% at 0% 0%, hsl(262 55% 17%) 0%, hsl(var(--ink)) 60%);
+}
+.holo-face::before,
+.holo-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+/* rainbow foil that slides with the pointer */
+.holo-face::before {
+  background: linear-gradient(
+    115deg,
+    transparent 25%,
+    hsl(280 100% 75% / 0.22) 38%,
+    hsl(195 100% 70% / 0.2) 46%,
+    hsl(330 100% 72% / 0.22) 54%,
+    transparent 66%
+  );
+  background-size: 260% 260%;
+  background-position: var(--gx) var(--gy);
+  mix-blend-mode: color-dodge;
+}
+.holo-face::after {
+  background: radial-gradient(
+    circle at var(--gx) var(--gy),
+    rgb(255 255 255 / 0.16),
+    transparent 45%
+  );
+}
+.holo:hover .holo-face::before,
+.holo:hover .holo-face::after {
+  opacity: 1;
+}
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .holo {
+    transform: rotate(var(--tilt, 0deg));
+  }
+  .holo-face::before,
+  .holo-face::after {
+    display: none;
+  }
+}
+/* a rubber stamp that lands on the card once it scrolls into view */
+@keyframes v-stamp {
+  0% {
+    opacity: 0;
+    transform: rotate(-12deg) scale(2.2);
+  }
+  55% {
+    opacity: 1;
+    transform: rotate(-12deg) scale(0.92);
+  }
+  75% {
+    transform: rotate(-12deg) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-12deg) scale(1);
+  }
+}
+.stamp {
+  transform: rotate(-12deg);
+}
+.js .stamp {
+  animation: v-stamp 0.55s cubic-bezier(0.2, 0, 0, 1) 1.1s both;
+}
+
+/* The app (not the website) uses Stripe's tighter corners: 6px controls, 8-12px cards. :has() reaches
+   menus and dialogs too, which render outside the shell. */
+:root:has(.app-ui) {
+  --radius: 0.5rem;
+}
+
+:root {
+  --radius: 0.75rem;
+  color-scheme: light;
+
+  --background: 257 47% 97%;
+  --foreground: 255 27% 12%;
+
+  --surface: 0 0% 100%;
+  --surface-2: 256 50% 95%;
+  --hero-bg: 257 60% 95%;
+  --nav-button: 257 55% 94%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 255 27% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 255 27% 12%;
+
+  --primary: 262 83% 58%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 251 91% 95%;
+  --secondary-foreground: 264 67% 35%;
+
+  --muted: 258 41% 95%;
+  --muted-foreground: 253 12% 45%;
+
+  --accent: 250 100% 98%;
+  --accent-foreground: 263 69% 42%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 142 72% 29%;
+  --success-foreground: 0 0% 100%;
+  --warning: 26 90% 37%;
+  --warning-foreground: 0 0% 100%;
+
+  --border: 260 33% 92%;
+  --input: 259 32% 89%;
+  --ring: 262 83% 58%;
+  --shadow: 262 45% 30%;
+  /* the store's violet, identical in both themes (for white-on-violet brand blocks) */
+  --brand: 262 83% 58%;
+  --brand-deep: 264 67% 35%;
+  --brand-light: 255 92% 76%;
+  /* always-dark surface (footer) */
+  --ink: 260 41% 8%;
+
+  /* violet, aqua, orange, blue, magenta: checked for colour-blind separation; always show a legend */
+  --chart-1: 262 83% 58%;
+  --chart-2: 158 73% 40%;
+  --chart-3: 17 82% 56%;
+  --chart-4: 213 68% 50%;
+  --chart-5: 337 70% 70%;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: 258 33% 6%;
+  --foreground: 255 38% 96%;
+
+  --surface: 259 27% 10%;
+  --surface-2: 259 26% 13%;
+  --hero-bg: 260 38% 5%;
+  --nav-button: 259 26% 15%;
+
+  --card: 259 27% 10%;
+  --card-foreground: 255 38% 96%;
+  --popover: 259 27% 10%;
+  --popover-foreground: 255 38% 96%;
+
+  /* lighter violet so violet text stays readable on dark; buttons carry dark text, as before */
+  --primary: 255 92% 76%;
+  --primary-foreground: 259 35% 9%;
+
+  --secondary: 259 30% 16%;
+  --secondary-foreground: 255 75% 94%;
+
+  --muted: 259 26% 13%;
+  --muted-foreground: 253 17% 67%;
+
+  --accent: 259 32% 19%;
+  --accent-foreground: 255 75% 94%;
+
+  --destructive: 0 84% 63%;
+  --destructive-foreground: 0 0% 98%;
+
+  --success: 142 69% 58%;
+  --success-foreground: 144 61% 10%;
+  --warning: 38 92% 60%;
+  --warning-foreground: 30 40% 8%;
+
+  --border: 259 23% 18%;
+  --input: 259 23% 21%;
+  --ring: 255 92% 76%;
+  --shadow: 0 0% 0%;
+
+  --chart-1: 258 90% 66%;
+  --chart-2: 159 73% 36%;
+  --chart-3: 17 70% 50%;
+  --chart-4: 213 77% 56%;
+  --chart-5: 338 61% 58%;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sora);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-sora);
+    letter-spacing: -0.03em;
+  }
+}
+
+@utility signal-text {
+  color: hsl(var(--primary));
+}
+
+@utility panel {
+  background-color: hsl(var(--surface));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+/* Motion: never override a user's reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}

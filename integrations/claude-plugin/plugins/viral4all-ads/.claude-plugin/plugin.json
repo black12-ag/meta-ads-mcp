@@ -1,0 +1,29 @@
+{
+  "name": "viral4all-ads",
+  "displayName": "Viral4All Ads",
+  "version": "1.0.2",
+  "description": "Run your Meta (Facebook and Instagram) ads from Claude: weekly checks, what changed, wasted-spend hunts, new campaigns and budget changes. Every budget, resume or edit waits for your one-click approval and stays inside the hard limits you set.",
+  "author": {
+    "name": "Viral4All",
+    "url": "https://ads.viral4all.com"
+  },
+  "homepage": "https://ads.viral4all.com",
+  "repository": "https://github.com/black12-ag/viral4all-ads",
+  "license": "MIT",
+  "icon": "./icon.png",
+  "documentationUrl": "https://ads.viral4all.com/docs",
+  "supportUrl": "https://ads.viral4all.com/support",
+  "privacyPolicyUrl": "https://ads.viral4all.com/privacy",
+  "termsOfServiceUrl": "https://ads.viral4all.com/terms",
+  "keywords": [
+    "meta-ads",
+    "facebook-ads",
+    "instagram-ads",
+    "advertising",
+    "marketing",
+    "ad-reporting",
+    "ad-budget",
+    "approvals",
+    "mcp"
+  ]
+}

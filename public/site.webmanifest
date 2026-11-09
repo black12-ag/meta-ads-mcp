@@ -1,0 +1,13 @@
+{
+  "name": "Viral4All Ads",
+  "short_name": "Viral4All",
+  "description": "Run your Meta ads from a dashboard, an AI assistant or the command line.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#F6F4FB",
+  "theme_color": "#7C3AED",
+  "icons": [
+    { "src": "/brand/v4-rise-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/brand/v4-rise-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
