@@ -2,12 +2,12 @@
   <img src="public/brand/v4-rise-192.png" alt="Viral4All Ads" width="96" height="96">
 </p>
 
-<h1 align="center">Viral4All Ads</h1>
+<h1 align="center">Meta Ads MCP</h1>
 
-<p align="center">
-  The Meta Ads control room for you and your AI. Manage Facebook and Instagram ads from a dashboard,
-  an MCP server or a REST API, with limits and approvals on every change.
-</p>
+<p align="center"><strong>Open-source Meta (Facebook &amp; Instagram) Ads manager with an MCP server.</strong><br>
+Let Claude, ChatGPT or Cursor manage your ads, safely: nothing changes outside the limits you set.</p>
+
+<p align="center"><sub>by <a href="https://ads.viral4all.com">Viral4All Ads</a> · self-hosted edition</sub></p>
 
 <p align="center">
   <a href="LICENSE"><img alt="License: AGPL-3.0" src="https://img.shields.io/badge/license-AGPL--3.0-blue"></a>
@@ -18,17 +18,17 @@
 <p align="center">
   <a href="https://ads.viral4all.com">Hosted version</a> ·
   <a href="https://ads.viral4all.com/docs">Docs</a> ·
-  <a href="https://github.com/black12-ag/viral4all-ads-selfhost/issues">Issues</a> ·
+  <a href="https://github.com/black12-ag/meta-ads-mcp/issues">Issues</a> ·
   <a href="CONTRIBUTING.md">Contributing</a> ·
   <a href="SECURITY.md">Security</a>
 </p>
 
-Connect a Meta account, then manage your ads from the dashboard, from an AI assistant (Claude,
+Connect a Meta account, then manage your ads from a dashboard, from an AI assistant (Claude,
 ChatGPT, Cursor) or from a script.
 
-Every change an AI or API key asks for is checked against limits you set (highest daily budget,
-biggest raise, changes per day, protected campaigns). Anything above them waits on an approval page
-until you confirm it.
+**How the safety works:** every change an AI or API key asks for is checked against limits you set
+(highest daily budget, biggest raise, changes per day, protected campaigns). Anything above them waits
+on an approval page until you confirm it. Pausing an ad, which only stops spend, runs straight away.
 
 **Don't want to host it?** Use the [hosted version](https://ads.viral4all.com). This repository is
 the self-hosted edition: you run the server, the database and your own Meta app.
@@ -57,7 +57,7 @@ One command does the setup. It installs the packages, makes your secret keys, cr
 writes `.env.local` and offers to start the app.
 
 ```sh
-git clone https://github.com/black12-ag/viral4all-ads-selfhost.git viral4all-ads && cd viral4all-ads
+git clone https://github.com/black12-ag/meta-ads-mcp.git && cd meta-ads-mcp
 npm run setup
 ```
 
@@ -167,7 +167,7 @@ Claude, ChatGPT or Cursor as a custom connector and sign in when asked.
 
 Bug reports and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first. Please
 follow the [code of conduct](CODE_OF_CONDUCT.md). There is no support promise: use
-[GitHub issues](https://github.com/black12-ag/viral4all-ads-selfhost/issues) for bugs.
+[GitHub issues](https://github.com/black12-ag/meta-ads-mcp/issues) for bugs.
 
 ## Support the project
 
